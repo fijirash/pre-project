@@ -11,13 +11,10 @@ public class Util {
     private static Connection connection;
 
     public static Connection getConnection() {
-        if (connection == null) {
-            try {
-                connection = DriverManager.getConnection(url, user, password);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try {
+            return DriverManager.getConnection(url, user, password);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return connection;
     }
 }
