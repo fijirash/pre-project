@@ -9,8 +9,9 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
     public UserDaoJDBCImpl() {
-
     }
+
+    Connection connection = Util.getConnection();
     public void createUsersTable() {
         String query = "CREATE TABLE IF NOT EXISTS users (" +
                 "id INT NOT NULL AUTO_INCREMENT," +
@@ -38,13 +39,26 @@ public class UserDaoJDBCImpl implements UserDao {
         String query = "INSERT INTO users (name, lastName, age) Values (?, ?, ?)";
         try (Connection connection = Util.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            connection.setAutoCommit(false);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
             preparedStatement.executeUpdate();
             System.out.printf("User с именем – %s добавлен в базу данных\n", name);
+            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            } finally {
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }
 
@@ -56,6 +70,11 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
     }
@@ -86,6 +105,11 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.executeUpdate("DELETE FROM users");
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

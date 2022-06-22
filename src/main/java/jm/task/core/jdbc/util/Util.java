@@ -8,13 +8,14 @@ public class Util {
     private final static String url = "jdbc:mysql://localhost:3306/user_db";
     private final static String user = "root";
     private final static String password = "root";
-    private static Connection connection;
 
     public static Connection getConnection() {
+        Connection connection = null;
         try {
-            return DriverManager.getConnection(url, user, password);
+            connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        return connection;
     }
 }

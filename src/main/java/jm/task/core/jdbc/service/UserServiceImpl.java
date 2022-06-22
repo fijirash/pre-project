@@ -10,19 +10,11 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     UserDao userDao = new UserDaoJDBCImpl();
     public void createUsersTable() {
-        try {
-            userDao.createUsersTable();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        userDao.createUsersTable();
     }
 
     public void dropUsersTable() {
-        try {
-            userDao.dropUsersTable();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        userDao.dropUsersTable();
     }
 
     public void saveUser(String name, String lastName, byte age) {
